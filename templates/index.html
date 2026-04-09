@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>PERUN Dashboard</title>
+<title>PERUN</title>
 
 <style>
 body {
@@ -10,6 +10,10 @@ body {
   background: #08090c;
   color: #c9d1d9;
   font-family: sans-serif;
+}
+
+.container {
+  display: flex;
 }
 
 .sidebar {
@@ -38,16 +42,34 @@ body {
   padding: 20px;
 }
 
-.container {
-  display: flex;
-}
-
 .card {
   background: #151921;
   border: 1px solid #1e2433;
-  padding: 20px;
+  padding: 15px;
+  margin-bottom: 10px;
   border-radius: 6px;
-  margin-bottom: 15px;
+}
+
+input, button {
+  padding: 8px;
+  margin: 5px;
+  background: #0e1117;
+  border: 1px solid #1e2433;
+  color: white;
+}
+
+button {
+  cursor: pointer;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+td, th {
+  border-bottom: 1px solid #1e2433;
+  padding: 8px;
 }
 </style>
 </head>
@@ -58,34 +80,160 @@ body {
 
   <div class="sidebar">
     <h2>PERUN</h2>
-    <div class="nav-item">Dashboard</div>
-    <div class="nav-item">Users</div>
-    <div class="nav-item">Devices</div>
-    <div class="nav-item">Incidents</div>
+    <div class="nav-item" onclick="showPage('dashboard')">Dashboard</div>
+    <div class="nav-item" onclick="showPage('users')">Users</div>
+    <div class="nav-item" onclick="showPage('devices')">Devices</div>
+    <div class="nav-item" onclick="showPage('incidents')">Incidents</div>
   </div>
 
-  <div class="main">
-    <h1>DASHBOARD</h1>
-
-    <div class="card">
-      Devices Online: 7 / 10
-    </div>
-
-    <div class="card">
-      Active Users: 6
-    </div>
-
-    <div class="card">
-      P1 Incidents: 2
-    </div>
-
-    <div class="card">
-      Alerts: 4
-    </div>
-
-  </div>
+  <div class="main" id="app"></div>
 
 </div>
+
+<script>
+let currentPage = "dashboard";
+
+// ─── NAVIGATION ─────────────────────────
+function showPage(page) {
+  currentPage = page;
+  render();
+}
+
+// ─── RENDER ────────────────────────────
+async function render() {
+
+  if (currentPage === "dashboard") {
+    document.getElementById("app").innerHTML = `
+      <h1>Dashboard</h1>
+      <div class="card">PERUN system online</div>
+    `;
+  }
+
+  if (currentPage === "users") {
+    const res = await fetch("/api/users");
+    const data = await res.json();
+
+    document.getElementById("app").innerHTML = `
+      <h1>Users</h1>
+
+      <div class="card">
+        <input id="name" placeholder="Name">
+        <input id="email" placeholder="Email">
+        <input id="role" placeholder="Role">
+        <button onclick="addUser()">Add</button>
+      </div>
+
+      <table>
+        <tr><th>Name</th><th>Email</th><th>Role</th></tr>
+        ${data.map(u => `
+          <tr>
+            <td>${u.name}</td>
+            <td>${u.email}</td>
+            <td>${u.role}</td>
+          </tr>
+        `).join("")}
+      </table>
+    `;
+  }
+
+  if (currentPage === "devices") {
+    const res = await fetch("/api/devices");
+    const data = await res.json();
+
+    document.getElementById("app").innerHTML = `
+      <h1>Devices</h1>
+
+      <div class="card">
+        <input id="dname" placeholder="Name">
+        <input id="ip" placeholder="IP">
+        <input id="status" placeholder="Status">
+        <button onclick="addDevice()">Add</button>
+      </div>
+
+      <table>
+        <tr><th>Name</th><th>IP</th><th>Status</th></tr>
+        ${data.map(d => `
+          <tr>
+            <td>${d.name}</td>
+            <td>${d.ip}</td>
+            <td>${d.status}</td>
+          </tr>
+        `).join("")}
+      </table>
+    `;
+  }
+
+  if (currentPage === "incidents") {
+    const res = await fetch("/api/incidents");
+    const data = await res.json();
+
+    document.getElementById("app").innerHTML = `
+      <h1>Incidents</h1>
+
+      <div class="card">
+        <input id="title" placeholder="Title">
+        <input id="status_i" placeholder="Status">
+        <input id="priority" placeholder="Priority">
+        <button onclick="addIncident()">Add</button>
+      </div>
+
+      <table>
+        <tr><th>Title</th><th>Status</th><th>Priority</th></tr>
+        ${data.map(i => `
+          <tr>
+            <td>${i.title}</td>
+            <td>${i.status}</td>
+            <td>${i.priority}</td>
+          </tr>
+        `).join("")}
+      </table>
+    `;
+  }
+}
+
+// ─── ADD FUNCTIONS ──────────────────────
+async function addUser() {
+  await fetch("/api/users", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      name: document.getElementById("name").value,
+      email: document.getElementById("email").value,
+      role: document.getElementById("role").value
+    })
+  });
+  render();
+}
+
+async function addDevice() {
+  await fetch("/api/devices", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      name: document.getElementById("dname").value,
+      ip: document.getElementById("ip").value,
+      status: document.getElementById("status").value
+    })
+  });
+  render();
+}
+
+async function addIncident() {
+  await fetch("/api/incidents", {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({
+      title: document.getElementById("title").value,
+      status: document.getElementById("status_i").value,
+      priority: document.getElementById("priority").value
+    })
+  });
+  render();
+}
+
+// ─── INIT ───────────────────────────────
+render();
+</script>
 
 </body>
 </html>
