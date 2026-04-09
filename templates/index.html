@@ -1,42 +1,88 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>PERUN — Infrastructure Platform</title>
+<script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<script type="text/babel">
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+const { useState } = React;
 
-  <style>
-    body {
-      margin: 0;
-      background: #08090c;
-      color: #c9d1d9;
-      font-family: 'DM Sans', sans-serif;
-    }
-  </style>
-</head>
-<body>
-  <div id="root"></div>
+// ─── STYLES ─────────────────────────────
+const T = {
+  bg: "#08090c",
+  surface: "#0e1117",
+  border: "#1e2433",
+  text: "#c9d1d9",
+  accent: "#3b82f6"
+};
 
-  <!-- React CDN -->
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+// ─── SIDEBAR ────────────────────────────
+function Sidebar({ page, setPage }) {
+  const items = ["Dashboard", "Users", "Devices"];
 
-  <!-- BABEL (za JSX) -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  return (
+    <div style={{
+      width: 200,
+      background: T.surface,
+      borderRight: `1px solid ${T.border}`,
+      padding: 20
+    }}>
+      <h2 style={{color: "white"}}>PERUN</h2>
 
-  <!-- TU IDE TVOJ CODE -->
-  <script type="text/babel">
+      {items.map(i => (
+        <div
+          key={i}
+          onClick={() => setPage(i)}
+          style={{
+            padding: "10px",
+            cursor: "pointer",
+            color: page === i ? T.accent : T.text
+          }}
+        >
+          {i}
+        </div>
+      ))}
+    </div>
+  );
+}
 
-    // ⬇️ OVDE nalepi CEO svoj React kod
-    // (ono što si mi poslao)
+// ─── PAGES ──────────────────────────────
+function Dashboard() {
+  return <h1>Dashboard 🚀</h1>;
+}
 
-  </script>
+function Users() {
+  return <h1>Users 👤</h1>;
+}
 
-  <script type="text/babel">
-    // root render
-    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-  </script>
-</body>
-</html>
+function Devices() {
+  return <h1>Devices 🖥️</h1>;
+}
+
+// ─── MAIN APP ───────────────────────────
+function App() {
+  const [page, setPage] = useState("Dashboard");
+
+  let content;
+  if (page === "Dashboard") content = <Dashboard />;
+  if (page === "Users") content = <Users />;
+  if (page === "Devices") content = <Devices />;
+
+  return (
+    <div style={{
+      display: "flex",
+      height: "100vh",
+      background: T.bg,
+      color: T.text
+    }}>
+      <Sidebar page={page} setPage={setPage} />
+
+      <div style={{ padding: 20, flex: 1 }}>
+        {content}
+      </div>
+    </div>
+  );
+}
+
+// ─── RENDER ─────────────────────────────
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+</script>
