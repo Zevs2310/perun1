@@ -1,38 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>PERUN</title>
+<meta charset="UTF-8">
+<title>PERUN Dashboard</title>
 
-  <style>
-    body {
-      margin: 0;
-      background: black;
-      color: white;
-      font-family: sans-serif;
-    }
-  </style>
+<style>
+body {
+  margin: 0;
+  background: #08090c;
+  color: #c9d1d9;
+  font-family: sans-serif;
+}
+
+.sidebar {
+  width: 220px;
+  background: #0e1117;
+  height: 100vh;
+  padding: 20px;
+  border-right: 1px solid #1e2433;
+}
+
+.sidebar h2 {
+  color: white;
+}
+
+.nav-item {
+  padding: 10px;
+  cursor: pointer;
+}
+
+.nav-item:hover {
+  background: #151921;
+}
+
+.main {
+  flex: 1;
+  padding: 20px;
+}
+
+.container {
+  display: flex;
+}
+
+.card {
+  background: #151921;
+  border: 1px solid #1e2433;
+  padding: 20px;
+  border-radius: 6px;
+  margin-bottom: 15px;
+}
+</style>
 </head>
+
 <body>
 
-  <!-- ROOT -->
-  <div id="root"></div>
+<div class="container">
 
-  <!-- React -->
-  <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <div class="sidebar">
+    <h2>PERUN</h2>
+    <div class="nav-item">Dashboard</div>
+    <div class="nav-item">Users</div>
+    <div class="nav-item">Devices</div>
+    <div class="nav-item">Incidents</div>
+  </div>
 
-  <!-- Babel -->
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <div class="main">
+    <h1>DASHBOARD</h1>
 
-  <!-- TEST APP -->
-  <script type="text/babel">
-    function App() {
-      return <h1>Radi na Renderu ✅</h1>;
-    }
+    <div class="card">
+      Devices Online: 7 / 10
+    </div>
 
-    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-  </script>
+    <div class="card">
+      Active Users: 6
+    </div>
+
+    <div class="card">
+      P1 Incidents: 2
+    </div>
+
+    <div class="card">
+      Alerts: 4
+    </div>
+
+  </div>
+
+</div>
 
 </body>
 </html>
