@@ -1,28 +1,19 @@
-from flask import Flask, send_from_directory, jsonify
+from flask import Flask, render_template, jsonify
 import os
-import os
 
-
-
-app = Flask(__name__, static_folder="static", template_folder="templates")
-
-# ─── ROUTES ─────────────────────────────────────────────
+app = Flask(__name__, template_folder="templates")
 
 @app.route("/")
 def index():
-    return send_from_directory("templates", "index.html")
+    return render_template("index.html")
 
 
-# Example API (kasnije proširi)
 @app.route("/api/health")
 def health():
     return jsonify({
         "status": "ok",
         "service": "PERUN API"
     })
-
-
-# ─── RUN ────────────────────────────────────────────────
 
 
 if __name__ == "__main__":
